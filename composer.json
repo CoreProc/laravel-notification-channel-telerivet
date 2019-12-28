@@ -13,6 +13,7 @@
     ],
     "require": {
         "php": ">=7.2",
+        "guzzlehttp/guzzle": "7.*",
         "illuminate/notifications": "~5.5 || ~6.0",
         "illuminate/support": "~5.5 || ~6.0"
     },
@@ -28,6 +29,13 @@
     "autoload-dev": {
         "psr-4": {
             "CoreProc\\NotificationChannels\\Telerivet\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CoreProc\\NotificationChannels\\Telerivet\\TelerivetServiceProvider"
+            ]
         }
     },
     "scripts": {

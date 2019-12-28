@@ -2,10 +2,12 @@
 
 namespace CoreProc\NotificationChannels\Telerivet\Exceptions;
 
+use GuzzleHttp\Exception\RequestException;
+
 class CouldNotSendNotification extends \Exception
 {
-    public static function serviceRespondedWithAnError($response)
+    public static function serviceRespondedWithAnError(RequestException $requestException)
     {
-        return new static("Descriptive error message.");
+        return new static($requestException->getMessage());
     }
 }

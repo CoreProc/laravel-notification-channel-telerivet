@@ -2,30 +2,59 @@
 
 namespace CoreProc\NotificationChannels\Telerivet;
 
-use NotificationChannels\Telerivet\Exceptions\CouldNotSendNotification;
+use CoreProc\NotificationChannels\Telerivet\Exceptions\CouldNotSendNotification;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Notifications\Notification;
+use Psr\Http\Message\ResponseInterface;
 
 class TelerivetChannel
 {
-    public function __construct()
+    public const DEFAULT_API_URL = 'https://api.telerivet.com';
+
+    protected $client;
+
+    public function __construct(Client $client)
     {
-        // Initialisation code here
+        $this->client = $client;
     }
 
     /**
      * Send the given notification.
      *
      * @param mixed $notifiable
-     * @param \Illuminate\Notifications\Notification $notification
+     * @param Notification $notification
      *
-     * @throws \NotificationChannels\Telerivet\Exceptions\CouldNotSendNotification
+     * @return ResponseInterface
+     * @throws CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
     {
-        //$response = [a call to the api of your notification send]
+        $telerivetMessage = $notification->toTelerivet($notifiable);
 
-//        if ($response->error) { // replace this by the code need to check for errors
-//            throw CouldNotSendNotification::serviceRespondedWithAnError($response);
-//        }
+        // If the message does not have a to_number of contact_id
+        if (empty($telerivetMessage->getToNumber()) && empty($telerivetMessage->getContactId())) {
+            // Check first if the notifiable object has a telerivetContactId
+            if (! empty($notifiable->routeNotificationFor('telerivetContactId'))) {
+                $telerivetMessage->setContactId($notifiable->routeNotificationFor('telerivetContactId'));
+            } else {
+                // If not, default to the "telerivet" route which should be a phone number
+                $telerivetMessage->setToNumber($notifiable->routeNotificationFor('telerivet'));
+            }
+        }
+
+        try {
+            $response = $this->client->post(
+                'v1/projects/' . config('broadcasting.connections.telerivet.project_id') . '/messages/send',
+                [
+                    'auth' => [config('broadcasting.connections.telerivet.api_key'), ''],
+                    'json' => $telerivetMessage->toArray(),
+                ]
+            );
+        } catch (RequestException $requestException) {
+            throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
+        }
+
+        return $response;
     }
 }

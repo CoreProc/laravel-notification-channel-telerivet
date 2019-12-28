@@ -1,24 +1,12 @@
-Please see [this repo](https://github.com/coreproc/channels) for instructions on how to submit a channel proposal.
-
-# A Boilerplate repo for contributions
+# Laravel Telerivet Notification Channel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coreproc/laravel-notification-channel-telerivet.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-telerivet)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/coreproc/laravel-notification-channel-telerivet/master.svg?style=flat-square)](https://travis-ci.org/coreproc/laravel-notification-channel-telerivet)
-[![StyleCI](https://styleci.io/repos/:style_ci_id/shield)](https://styleci.io/repos/:style_ci_id)
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/:sensio_labs_id.svg?style=flat-square)](https://insight.sensiolabs.com/projects/:sensio_labs_id)
+[![StyleCI](https://styleci.io/repos/230629587/shield)](https://styleci.io/repos/230629587)
 [![Quality Score](https://img.shields.io/scrutinizer/g/coreproc/laravel-notification-channel-telerivet.svg?style=flat-square)](https://scrutinizer-ci.com/g/coreproc/laravel-notification-channel-telerivet)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/coreproc/laravel-notification-channel-telerivet/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/coreproc/laravel-notification-channel-telerivet/?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/coreproc/laravel-notification-channel-telerivet.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-telerivet)
 
 This package makes it easy to send notifications using [Telerivet](link to service) with Laravel 5.5+ and 6.0
-
-**Note:** Replace ```Telerivet``` ```Telerivet``` ```Chris Bautista``` ```chrisbjr``` ```https://github.com/chrisbjr``` ```chris.bautista@coreproc.ph``` ```laravel-notification-channel-telerivet``` ```This package makes it easy to send notifications using Telerivet with Laravel 5.5+ and 6.0``` ```:style_ci_id``` ```:sensio_labs_id``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md), [composer.json](composer.json) and other files, then delete this line.
-**Tip:** Use "Find in Path/Files" in your code editor to find these keywords within the package directory and replace all occurences with your specified term.
-
-This is where your description should go. Add a little code example so build can understand real quick how the package can be used. Try and limit it to a paragraph or two.
-
-
 
 ## Contents
 
@@ -36,33 +24,246 @@ This is where your description should go. Add a little code example so build can
 
 ## Installation
 
-Please also include the steps for any third-party service setup that's required for this package.
+Install this package with Composer:
+
+    composer require coreproc/laravel-notification-channel-telerivet
+    
+Register the ServiceProvider in your config/app.php (Skip this step if you are using Laravel 5.5):
+
+    CoreProc\NotificationChannels\Telerivet\TelerivetServiceProvider::class,
 
 ### Setting up the Telerivet service
 
-Optionally include a few steps how users can set up the service.
+You need to register for an API key and a number for outgoing SMS here: 
+[https://telerivet.com](https://telerivet.com)
+
+Once you've registered and set up your project and numbers, add the API key and project ID to your configuration in 
+`config/broadcasting.php`
+
+    'connections' => [
+        ....
+        'telerivet' => [
+            'api_key' => env('TELERIVET_API_KEY'),
+            'project_id' => env('TELERIVET_PROJECT_ID'),
+        ],
+        ...
+    ]
 
 ## Usage
 
-Some code examples, make it clear how to use the package
+You can now send SMS via Telerivet by creating a `TelerivetMessage`:
+
+```php
+use CoreProc\NotificationChannels\Telerivet\TelerivetChannel;
+use CoreProc\NotificationChannels\Telerivet\TelerivetMessage;
+use Illuminate\Notifications\Notification;
+
+class AccountActivated extends Notification
+{
+    public function via($notifiable)
+    {
+        return [TelerivetChannel::class];
+    }
+
+    public function toTelerivet($notifiable)
+    {
+        return (new TelerivetMessage())
+            ->setContent('Hello this is a test message');
+    }
+}
+```
+
+You will have to set a `routeNotificationForTelerivet()` method in your notifiable model. For example:
+
+```php
+class User extends Authenticatable
+{
+    use Notifiable;
+
+    ....
+
+    /**
+     * Specifies the user's mobile number for use in Telerivet
+     *
+     * @return string
+     */
+    public function routeNotificationForTelerivet()
+    {
+        return $this->mobile_number;
+    }
+}
+```
+
+Once you have that in place, you can simply send an SMS notification to the user via
+
+```
+$user->notify(new AccountActivated);
+```
+
 
 ### Available Message methods
 
-A list of all available options
+All the parameters that can be used for a Telerivet message can be applied through the `TelerivetMessage` object. The
+documentation from Telerivet can be found here [here](https://telerivet.com/api/rest/curl#Project.sendMessage).
+
+
+```php
+setMessageType(?string $messageType)
+```
+
+[Optional] Type of message to send. If text, will use the default text message type for the selected route.
+
+Possible Values: sms, mms, ussd, call, text
+
+Default: text
+
+```php
+setContent(?string $content)
+```
+
+[Required if sending SMS message] Content of the message to send (if message_type is call, the text will be spoken during a text-to-speech call)
+
+```php
+setToNumber(?string $toNumber)
+```
+
+[Required if contact_id not set] Phone number to send the message to. This is automatically set if you have defined the
+`routeNotificationForTelerivet()` method in your notifiable object.
+
+```php
+setContactId(?string $contactId)
+```
+
+[Required if to_number not set] ID of the contact to send the message to. This can be automatically set if you have
+defined a `routeNotificationForTelerivetContactId()` method in your notifiable object.
+
+```php
+setRouteId(?string $routeId)
+```
+
+[Optional] ID of the phone or route to send the message from
+
+Default: default sender route ID for your project
+
+```php
+setStatusUrl(?string $statusUrl)
+```
+
+[Optional] Webhook callback URL to be notified when message status changes
+
+```php
+setStatusSecret(?string $statusSecret)
+```
+
+[Optional] POST parameter 'secret' passed to status_url
+
+```php
+setIsTemplate(?bool $isTemplate)
+```
+
+[Optional] Set to true to evaluate variables like [[contact.name]] in message content.
+
+(See available variables [here](https://telerivet.com/api/rest/curl#variables))
+
+Default: false
+
+```php
+setTrackClicks(?bool $trackClicks)
+```
+
+[Optional] If true, URLs in the message content will automatically be replaced with unique short URLs.
+
+Default: false
+
+```php
+setMediaUrls(?array $mediaUrls)
+```
+
+[Optional] URLs of media files to attach to the text message. If message_type is sms, short links to each media
+
+URL will be appended to the end of the content (separated by a new line).
+
+```php
+setLabelIds(?array $labelIds)
+```
+
+[Optional] Array string IDs of [Label](https://telerivet.com/api/rest/curl#Label)
+
+List of IDs of labels to add to this message
+
+```php
+setVars(?object $vars)
+```
+
+[Optional] Custom variables to store with the message
+
+```php
+setPriority(?int $priority)
+```
+
+[Optional] Priority of the message. Telerivet will attempt to send messages with higher priority numbers first 
+(for example, so you can prioritize an auto-reply ahead of a bulk message to a large group).
+
+Possible Values: 1, 2
+
+Default: 1
+
+```php
+setSimulated(?bool $simulated)
+```
+
+[Optional] Set to true to test the Telerivet API without actually sending a message from the route
+
+Default: false
+
+```php
+setServiceId(?string $serviceId)
+```
+
+[Optional] string ID of [Service](https://telerivet.com/api/rest/curl#Service)
+
+Service that defines the call flow of the voice call (when message_type is call)
+
+```php
+setAudioUrl(?string $audioUrl)
+```
+
+[Optional] The URL of an MP3 file to play when the contact answers the call (when message_type is call).
+
+If audio_url is provided, the text-to-speech voice is not used to say content, although you can optionally use
+content to indicate the script for the audio.
+
+For best results, use an MP3 file containing only speech. Music is not recommended because the audio quality will
+be low when played over a phone line.
+
+```php
+setTtsLang(?string $ttsLang)
+```
+
+[Optional] The language of the text-to-speech voice (when message_type is call)
+
+Possible Values: en-US, en-GB, en-GB-WLS, en-AU, en-IN, da-DK, nl-NL, fr-FR, fr-CA, de-DE, is-IS, it-IT, pl-PL,
+pt-BR, pt-PT, ru-RU, es-ES, es-US, sv-SE
+
+Default: en-US
+
+```php
+setTtsVoice(?string $ttsVoice)
+```
+
+[Optional] The name of the text-to-speech voice (when message_type=call)
+
+Possible Values: female, male
+
+Default: female
 
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
-## Testing
-
-``` bash
-$ composer test
-```
-
 ## Security
 
-If you discover any security related issues, please email chris.bautista@coreproc.ph instead of using the issue tracker.
+If you discover any security related issues, please email to chris.bautista@coreproc.ph instead of using the issue tracker.
 
 ## Contributing
 

@@ -110,7 +110,7 @@ class TelerivetMessage
      * @param string $messageType
      * @return TelerivetMessage
      */
-    public function setMessageType(?string $messageType): TelerivetMessage
+    public function setMessageType(?string $messageType): self
     {
         $this->messageType = $messageType;
 
@@ -132,7 +132,7 @@ class TelerivetMessage
      * @param string $content
      * @return TelerivetMessage
      */
-    public function setContent(?string $content): TelerivetMessage
+    public function setContent(?string $content): self
     {
         $this->content = $content;
 
@@ -154,7 +154,7 @@ class TelerivetMessage
      * @param string $toNumber
      * @return TelerivetMessage
      */
-    public function setToNumber(?string $toNumber): TelerivetMessage
+    public function setToNumber(?string $toNumber): self
     {
         $this->toNumber = $toNumber;
 
@@ -176,7 +176,7 @@ class TelerivetMessage
      * @param string $contactId
      * @return TelerivetMessage
      */
-    public function setContactId(?string $contactId): TelerivetMessage
+    public function setContactId(?string $contactId): self
     {
         $this->contactId = $contactId;
 
@@ -198,7 +198,7 @@ class TelerivetMessage
      * @param string $routeId
      * @return TelerivetMessage
      */
-    public function setRouteId(?string $routeId): TelerivetMessage
+    public function setRouteId(?string $routeId): self
     {
         $this->routeId = $routeId;
 
@@ -219,7 +219,7 @@ class TelerivetMessage
      * @param string $statusUrl
      * @return TelerivetMessage
      */
-    public function setStatusUrl(?string $statusUrl): TelerivetMessage
+    public function setStatusUrl(?string $statusUrl): self
     {
         $this->statusUrl = $statusUrl;
 
@@ -240,7 +240,7 @@ class TelerivetMessage
      * @param string $statusSecret
      * @return TelerivetMessage
      */
-    public function setStatusSecret(?string $statusSecret): TelerivetMessage
+    public function setStatusSecret(?string $statusSecret): self
     {
         $this->statusSecret = $statusSecret;
 
@@ -263,7 +263,7 @@ class TelerivetMessage
      * @param bool $isTemplate
      * @return TelerivetMessage
      */
-    public function setIsTemplate(?bool $isTemplate): TelerivetMessage
+    public function setIsTemplate(?bool $isTemplate): self
     {
         $this->isTemplate = $isTemplate;
 
@@ -285,7 +285,7 @@ class TelerivetMessage
      * @param bool $trackClicks
      * @return TelerivetMessage
      */
-    public function setTrackClicks(?bool $trackClicks): TelerivetMessage
+    public function setTrackClicks(?bool $trackClicks): self
     {
         $this->trackClicks = $trackClicks;
 
@@ -307,7 +307,7 @@ class TelerivetMessage
      * @param array $mediaUrls
      * @return TelerivetMessage
      */
-    public function setMediaUrls(?array $mediaUrls): TelerivetMessage
+    public function setMediaUrls(?array $mediaUrls): self
     {
         $this->mediaUrls = $mediaUrls;
 
@@ -329,7 +329,7 @@ class TelerivetMessage
      * @param array $labelIds
      * @return TelerivetMessage
      */
-    public function setLabelIds(?array $labelIds): TelerivetMessage
+    public function setLabelIds(?array $labelIds): self
     {
         $this->labelIds = $labelIds;
 
@@ -350,7 +350,7 @@ class TelerivetMessage
      * @param object $vars
      * @return TelerivetMessage
      */
-    public function setVars(?object $vars): TelerivetMessage
+    public function setVars(?object $vars): self
     {
         $this->vars = $vars;
 
@@ -374,7 +374,7 @@ class TelerivetMessage
      * @param int $priority
      * @return TelerivetMessage
      */
-    public function setPriority(?int $priority): TelerivetMessage
+    public function setPriority(?int $priority): self
     {
         $this->priority = $priority;
 
@@ -396,7 +396,7 @@ class TelerivetMessage
      * @param bool $simulated
      * @return TelerivetMessage
      */
-    public function setSimulated(?bool $simulated): TelerivetMessage
+    public function setSimulated(?bool $simulated): self
     {
         $this->simulated = $simulated;
 
@@ -418,7 +418,7 @@ class TelerivetMessage
      * @param string $serviceId
      * @return TelerivetMessage
      */
-    public function setServiceId(?string $serviceId): TelerivetMessage
+    public function setServiceId(?string $serviceId): self
     {
         $this->serviceId = $serviceId;
 
@@ -443,7 +443,7 @@ class TelerivetMessage
      * @param string $audioUrl
      * @return TelerivetMessage
      */
-    public function setAudioUrl(?string $audioUrl): TelerivetMessage
+    public function setAudioUrl(?string $audioUrl): self
     {
         $this->audioUrl = $audioUrl;
 
@@ -467,7 +467,7 @@ class TelerivetMessage
      * @param string $ttsLang
      * @return TelerivetMessage
      */
-    public function setTtsLang(?string $ttsLang): TelerivetMessage
+    public function setTtsLang(?string $ttsLang): self
     {
         $this->ttsLang = $ttsLang;
 
@@ -490,7 +490,7 @@ class TelerivetMessage
      * @param string $ttsVoice
      * @return TelerivetMessage
      */
-    public function setTtsVoice(?string $ttsVoice): TelerivetMessage
+    public function setTtsVoice(?string $ttsVoice): self
     {
         $this->ttsVoice = $ttsVoice;
 

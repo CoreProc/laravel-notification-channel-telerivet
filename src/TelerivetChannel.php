@@ -2,9 +2,12 @@
 
 namespace CoreProc\NotificationChannels\Telerivet;
 
+use CoreProc\NotificationChannels\Telerivet\Events\TelerivetSmsSendingFailed;
+use CoreProc\NotificationChannels\Telerivet\Events\TelerivetSmsSent;
 use CoreProc\NotificationChannels\Telerivet\Exceptions\CouldNotSendNotification;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Notifications\Notification;
 use Psr\Http\Message\ResponseInterface;
 
@@ -44,6 +47,7 @@ class TelerivetChannel
         }
 
         try {
+            /** @var Response $response */
             $response = $this->client->post(
                 'v1/projects/' . config('broadcasting.connections.telerivet.project_id') . '/messages/send',
                 [
@@ -52,8 +56,12 @@ class TelerivetChannel
                 ]
             );
         } catch (RequestException $requestException) {
+            event(new TelerivetSmsSendingFailed($requestException));
+
             throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
         }
+
+        event(new TelerivetSmsSent($response));
 
         return $response;
     }

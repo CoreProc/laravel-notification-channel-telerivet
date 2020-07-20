@@ -60,12 +60,12 @@ class TelerivetChannel
                 ]
             );
         } catch (RequestException $requestException) {
-            event(new TelerivetSmsFailed($requestException));
+            event(new TelerivetSmsFailed($telerivetMessage, $requestException));
 
             throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
         }
 
-        event(new TelerivetSmsSent($response));
+        event(new TelerivetSmsSent($telerivetMessage, $response));
 
         return $response;
     }

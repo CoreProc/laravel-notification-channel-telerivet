@@ -6,7 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/coreproc/laravel-notification-channel-telerivet.svg?style=flat-square)](https://scrutinizer-ci.com/g/coreproc/laravel-notification-channel-telerivet)
 [![Total Downloads](https://img.shields.io/packagist/dt/coreproc/laravel-notification-channel-telerivet.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-telerivet)
 
-This package makes it easy to send notifications using [Telerivet](link to service) with Laravel 5.5+ and 6.0
+This package makes it easy to send notifications using [Telerivet](https://telerivet.com/) with Laravel 5.5+ and 6.0
 
 ## Contents
 
@@ -100,6 +100,21 @@ Once you have that in place, you can simply send an SMS notification to the user
 $user->notify(new AccountActivated);
 ```
 
+### Events
+
+You can listen to these event when sending a Telerivet SMS message:
+
+Before an SMS is sent:
+
+`TelerivetSmsSending::class`
+
+When an SMS is sent (this means that the API call to Telerivet was successful):
+
+`TelerivetSmsSent::class`
+
+When an SMS fails to send (this means the API call to Telerivet has failed):
+
+`TelerivetSmsFailed::class` 
 
 ### Available Message methods
 

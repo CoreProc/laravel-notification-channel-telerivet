@@ -10,6 +10,11 @@ class TelerivetSmsSending
     use Dispatchable;
 
     /**
+     * @var object
+     */
+    public $notifiable;
+
+    /**
      * @var TelerivetMessage
      */
     public $telerivetMessage;
@@ -17,10 +22,12 @@ class TelerivetSmsSending
     /**
      * Create a new event instance.
      *
+     * @param object $notifiable
      * @param TelerivetMessage $telerivetMessage
      */
-    public function __construct(TelerivetMessage $telerivetMessage)
+    public function __construct($notifiable, TelerivetMessage $telerivetMessage)
     {
+        $this->notifiable = $notifiable;
         $this->telerivetMessage = $telerivetMessage;
     }
 }

@@ -11,6 +11,11 @@ class TelerivetSmsFailed
     use Dispatchable;
 
     /**
+     * @var object
+     */
+    public $notifiable;
+
+    /**
      * @var TelerivetMessage
      */
     public $telerivetMessage;
@@ -23,11 +28,13 @@ class TelerivetSmsFailed
     /**
      * Create a new event instance.
      *
+     * @param object $notifiable
      * @param TelerivetMessage $telerivetMessage
      * @param RequestException $requestException
      */
-    public function __construct(TelerivetMessage $telerivetMessage, RequestException $requestException)
+    public function __construct($notifiable, TelerivetMessage $telerivetMessage, RequestException $requestException)
     {
+        $this->notifiable = $notifiable;
         $this->telerivetMessage = $telerivetMessage;
         $this->requestException = $requestException;
     }

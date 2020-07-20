@@ -48,7 +48,7 @@ class TelerivetChannel
             }
         }
 
-        event(new TelerivetSmsSending($telerivetMessage));
+        event(new TelerivetSmsSending($notifiable, $telerivetMessage));
 
         try {
             /** @var Response $response */
@@ -60,12 +60,12 @@ class TelerivetChannel
                 ]
             );
         } catch (RequestException $requestException) {
-            event(new TelerivetSmsFailed($telerivetMessage, $requestException));
+            event(new TelerivetSmsFailed($notifiable, $telerivetMessage, $requestException));
 
             throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
         }
 
-        event(new TelerivetSmsSent($telerivetMessage, $response));
+        event(new TelerivetSmsSent($notifiable, $telerivetMessage, $response));
 
         return $response;
     }

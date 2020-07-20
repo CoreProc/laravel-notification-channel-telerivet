@@ -2,7 +2,8 @@
 
 namespace CoreProc\NotificationChannels\Telerivet;
 
-use CoreProc\NotificationChannels\Telerivet\Events\TelerivetSmsSendingFailed;
+use CoreProc\NotificationChannels\Telerivet\Events\TelerivetSmsFailed;
+use CoreProc\NotificationChannels\Telerivet\Events\TelerivetSmsSending;
 use CoreProc\NotificationChannels\Telerivet\Events\TelerivetSmsSent;
 use CoreProc\NotificationChannels\Telerivet\Exceptions\CouldNotSendNotification;
 use GuzzleHttp\Client;
@@ -33,6 +34,7 @@ class TelerivetChannel
      */
     public function send($notifiable, Notification $notification)
     {
+        /** @var TelerivetMessage $telerivetMessage */
         $telerivetMessage = $notification->toTelerivet($notifiable);
 
         // If the message does not have a to_number of contact_id
@@ -46,6 +48,8 @@ class TelerivetChannel
             }
         }
 
+        event(new TelerivetSmsSending($telerivetMessage));
+
         try {
             /** @var Response $response */
             $response = $this->client->post(
@@ -56,7 +60,7 @@ class TelerivetChannel
                 ]
             );
         } catch (RequestException $requestException) {
-            event(new TelerivetSmsSendingFailed($requestException));
+            event(new TelerivetSmsFailed($requestException));
 
             throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
         }

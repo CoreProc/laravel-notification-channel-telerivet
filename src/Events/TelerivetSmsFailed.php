@@ -5,7 +5,7 @@ namespace CoreProc\NotificationChannels\Telerivet\Events;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class TelerivetSmsSendingFailed
+class TelerivetSmsFailed
 {
     use Dispatchable;
 

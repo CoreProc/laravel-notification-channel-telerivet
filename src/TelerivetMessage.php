@@ -5,6 +5,20 @@ namespace CoreProc\NotificationChannels\Telerivet;
 class TelerivetMessage
 {
     /**
+     * Optionally override the project ID from the config
+     *
+     * @var string|null
+     */
+    protected $projectId;
+
+    /**
+     * Optionally override the API key from the config
+     *
+     * @var string|null
+     */
+    protected $apiKey;
+
+    /**
      * @var string
      */
     protected $messageType;
@@ -95,6 +109,44 @@ class TelerivetMessage
     protected $ttsVoice;
 
     /**
+     * @return string|null
+     */
+    public function getProjectId(): ?string
+    {
+        return $this->projectId;
+    }
+
+    /**
+     * @param string|null $projectId
+     * @return TelerivetMessage
+     */
+    public function setProjectId(?string $projectId): self
+    {
+        $this->projectId = $projectId;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getApiKey(): ?string
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @param string|null $apiKey
+     * @return TelerivetMessage
+     */
+    public function setApiKey(?string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getMessageType(): ?string
@@ -107,7 +159,7 @@ class TelerivetMessage
      * Possible Values: sms, mms, ussd, call, text
      * Default: text
      *
-     * @param string $messageType
+     * @param string|null $messageType
      * @return TelerivetMessage
      */
     public function setMessageType(?string $messageType): self
@@ -129,7 +181,7 @@ class TelerivetMessage
      * [Required if sending SMS message]
      * Content of the message to send (if message_type is call, the text will be spoken during a text-to-speech call)
      *
-     * @param string $content
+     * @param string|null $content
      * @return TelerivetMessage
      */
     public function setContent(?string $content): self
@@ -151,7 +203,7 @@ class TelerivetMessage
      * [Required if contact_id not set]
      * Phone number to send the message to.
      *
-     * @param string $toNumber
+     * @param string|null $toNumber
      * @return TelerivetMessage
      */
     public function setToNumber(?string $toNumber): self
@@ -173,7 +225,7 @@ class TelerivetMessage
      * [Required if to_number not set]
      * ID of the contact to send the message to
      *
-     * @param string $contactId
+     * @param string|null $contactId
      * @return TelerivetMessage
      */
     public function setContactId(?string $contactId): self
@@ -195,7 +247,7 @@ class TelerivetMessage
      * [Optional] ID of the phone or route to send the message from
      * Default: default sender route ID for your project
      *
-     * @param string $routeId
+     * @param string|null $routeId
      * @return TelerivetMessage
      */
     public function setRouteId(?string $routeId): self
@@ -216,7 +268,7 @@ class TelerivetMessage
     /**
      * [Optional] Webhook callback URL to be notified when message status changes
      *
-     * @param string $statusUrl
+     * @param string|null $statusUrl
      * @return TelerivetMessage
      */
     public function setStatusUrl(?string $statusUrl): self
@@ -237,7 +289,7 @@ class TelerivetMessage
     /**
      * [Optional] POST parameter 'secret' passed to status_url
      *
-     * @param string $statusSecret
+     * @param string|null $statusSecret
      * @return TelerivetMessage
      */
     public function setStatusSecret(?string $statusSecret): self
@@ -304,7 +356,7 @@ class TelerivetMessage
      * [Optional] URLs of media files to attach to the text message. If message_type is sms, short links to each media
      * URL will be appended to the end of the content (separated by a new line).
      *
-     * @param array $mediaUrls
+     * @param array|null $mediaUrls
      * @return TelerivetMessage
      */
     public function setMediaUrls(?array $mediaUrls): self
@@ -326,7 +378,7 @@ class TelerivetMessage
      * [Optional] Array string IDs of Label <https://telerivet.com/api/rest/curl#Label>
      * List of IDs of labels to add to this message
      *
-     * @param array $labelIds
+     * @param array|null $labelIds
      * @return TelerivetMessage
      */
     public function setLabelIds(?array $labelIds): self
@@ -347,7 +399,7 @@ class TelerivetMessage
     /**
      * [Optional] Custom variables to store with the message
      *
-     * @param object $vars
+     * @param object|null $vars
      * @return TelerivetMessage
      */
     public function setVars(?object $vars): self
@@ -371,7 +423,7 @@ class TelerivetMessage
      * Possible Values: 1, 2
      * Default: 1
      *
-     * @param int $priority
+     * @param int|null $priority
      * @return TelerivetMessage
      */
     public function setPriority(?int $priority): self
@@ -415,7 +467,7 @@ class TelerivetMessage
      * [Optional] string ID of Service <https://telerivet.com/api/rest/curl#Service>
      * Service that defines the call flow of the voice call (when message_type is call)
      *
-     * @param string $serviceId
+     * @param string|null $serviceId
      * @return TelerivetMessage
      */
     public function setServiceId(?string $serviceId): self
@@ -440,7 +492,7 @@ class TelerivetMessage
      * For best results, use an MP3 file containing only speech. Music is not recommended because the audio quality will
      * be low when played over a phone line.
      *
-     * @param string $audioUrl
+     * @param string|null $audioUrl
      * @return TelerivetMessage
      */
     public function setAudioUrl(?string $audioUrl): self
@@ -464,7 +516,7 @@ class TelerivetMessage
      * pt-BR, pt-PT, ru-RU, es-ES, es-US, sv-SE
      * Default: en-US
      *
-     * @param string $ttsLang
+     * @param string|null $ttsLang
      * @return TelerivetMessage
      */
     public function setTtsLang(?string $ttsLang): self
@@ -487,7 +539,7 @@ class TelerivetMessage
      * Possible Values: female, male
      * Default: female
      *
-     * @param string $ttsVoice
+     * @param string|null $ttsVoice
      * @return TelerivetMessage
      */
     public function setTtsVoice(?string $ttsVoice): self

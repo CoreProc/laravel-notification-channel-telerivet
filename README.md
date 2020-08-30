@@ -21,6 +21,15 @@ This package makes it easy to send notifications using [Telerivet](https://teler
 - [Credits](#credits)
 - [License](#license)
 
+## Upgrading from v1.x to v2.x
+
+In v2.x, we've moved the configuration settings of Telerivet from `config/broadcasting.php` to `config/telerivet.php`.
+
+To migrate to v2.x, simply run the following command to get the configuration file:
+
+```
+php artisan vendor:publish --provider="CoreProc\NotificationChannels\Telerivet\TelerivetServiceProvider"
+```
 
 ## Installation
 
@@ -37,17 +46,17 @@ Register the ServiceProvider in your config/app.php (Skip this step if you are u
 You need to register for an API key and a number for outgoing SMS here: 
 [https://telerivet.com](https://telerivet.com)
 
-Once you've registered and set up your project and numbers, add the API key and project ID to your configuration in 
-`config/broadcasting.php`
+Once you've registered and set up your project and numbers, get the configuration file by running the following command:
 
-    'connections' => [
-        ....
-        'telerivet' => [
-            'api_key' => env('TELERIVET_API_KEY'),
-            'project_id' => env('TELERIVET_PROJECT_ID'),
-        ],
-        ...
-    ]
+```
+php artisan vendor:publish --provider="CoreProc\NotificationChannels\Telerivet\TelerivetServiceProvider"
+```
+
+Add the API key and project ID to your configuration in `config/telerivet.php`. You can set the credentials in your
+`.env` file with the following variables: `TELERIVET_API_KEY` and `TELERIVET_PROJECT_ID`.
+
+Optionally, you can also override these configurations by calling the `setApiKey()` and `setProjectId()` methods
+in your `TelerivetMessage` object.
 
 ## Usage
 

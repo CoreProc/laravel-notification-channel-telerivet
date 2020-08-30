@@ -19,5 +19,9 @@ class TelerivetServiceProvider extends ServiceProvider
                     'base_uri' => config('broadcasting.connections.telerivet.url', TelerivetChannel::DEFAULT_API_URL),
                 ]);
             });
+
+        $this->publishes([
+            __DIR__ . '/../config/telerivet.php' => config_path('telerivet.php'),
+        ], 'telerivet-config');
     }
 }

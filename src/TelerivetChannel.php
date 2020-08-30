@@ -53,9 +53,9 @@ class TelerivetChannel
         try {
             /** @var Response $response */
             $response = $this->client->post(
-                'v1/projects/' . config('broadcasting.connections.telerivet.project_id') . '/messages/send',
+                'v1/projects/' . $this->getProjectId($telerivetMessage) . '/messages/send',
                 [
-                    'auth' => [config('broadcasting.connections.telerivet.api_key'), ''],
+                    'auth' => [$this->getApiKey($telerivetMessage), ''],
                     'json' => $telerivetMessage->toArray(),
                 ]
             );
@@ -68,5 +68,23 @@ class TelerivetChannel
         event(new TelerivetSmsSent($notifiable, $telerivetMessage, $response));
 
         return $response;
+    }
+
+    protected function getProjectId(TelerivetMessage $telerivetMessage)
+    {
+        if (! empty($telerivetMessage->getProjectId())) {
+            return $telerivetMessage->getProjectId();
+        }
+
+        return config('telerivet.project_id');
+    }
+
+    protected function getApiKey(TelerivetMessage $telerivetMessage)
+    {
+        if (! empty($telerivetMessage->getApiKey())) {
+            return $telerivetMessage->getApiKey();
+        }
+
+        return config('telerivet.api_key');
     }
 }
